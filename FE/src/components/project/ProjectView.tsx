@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  SetStateAction,
   useEffect,
   // SetStateAction,
   // MutableRefObject,
@@ -18,6 +19,9 @@ import * as dance from '@/services/dance';
 import * as project from '@/services/project';
 // import { Title } from './Title';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import { Upload } from '@mui/icons-material';
+import { SetState } from 'zustand';
+import TagsInput from '../common/TagInput';
 interface ITrimSection {
   start: number;
   end: number;
@@ -33,9 +37,11 @@ const Tmp = styled.div`
   justify-content: space-between;
 `;
 const FlexWrapper = styled.div`
-  width: 100%;
+  padding: 1.2rem;
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-around;
 `;
 
 const PleaseUploadFile = styled.div`
@@ -201,7 +207,7 @@ const ProjectView = (props: Props) => {
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState({ start: '', middle: '', end: '' });
   const [orgVideo, setOrgVideo] = useState('');
@@ -240,7 +246,7 @@ const ProjectView = (props: Props) => {
         video.removeEventListener('pause', handlePause);
       }
     };
-  }, [props.videoRef]);
+  }, [props.videoRef, startPose, endPose]);
   const handleTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const time = Number(event.target.value);
 
@@ -361,12 +367,10 @@ const ProjectView = (props: Props) => {
         middle: URL.createObjectURL(middleImage),
         end: URL.createObjectURL(endImage),
       });
-
-      setOpen(true);
     }
   };
 
-  const UploadSource = () => {
+  const UploadSource = async () => {
     const data = {
       sourceName: 'MySource',
       sourceLength: duration,
@@ -375,28 +379,38 @@ const ProjectView = (props: Props) => {
       end: 'string',
     };
     const formData = new FormData();
-    if (props.videoRef.current) {
-      formData.append('sourceThumbnail', images.start);
-      formData.append('sourceVideo', props.videoRef.current.src);
-    }
-
     formData.append(
       'postSource',
       new Blob([JSON.stringify(data)], { type: 'application/json' })
     );
+
+    if (props.videoRef.current) {
+      // Blob URL을 File 객체로 변환
+      const response1 = await fetch(images.start);
+      const blob1 = await response1.blob();
+      const file1 = new File([blob1], 'filename1', { type: blob1.type });
+
+      const response2 = await fetch(props.videoRef.current.src);
+      const blob2 = await response2.blob();
+      const file2 = new File([blob2], 'filename2', { type: blob2.type });
+
+      formData.append('sourceThumbnail', file1);
+      formData.append('sourceVideo', file2);
+    }
+
     dance.postSource(formData);
   };
 
-  const DetectPose = () => {
+  const DetectPose = async () => {
     if (imageFiles.start instanceof File) {
-      project.detectPose(imageFiles.start).then((res) => {
-        setStartPose(res.data);
+      await project.detectPose(imageFiles.start).then((res) => {
+        setStartPose(res.data.recommend_pose_name);
         console.log(res.data);
       });
     }
     if (imageFiles.end instanceof File) {
-      project.detectPose(imageFiles.end).then((res) => {
-        setEndPose(res.data);
+      await project.detectPose(imageFiles.end).then((res) => {
+        setEndPose(res.data.recommend_pose_name);
         console.log(res.data);
       });
     }
@@ -409,11 +423,12 @@ const ProjectView = (props: Props) => {
 
   const Trim = async () => {
     props.trimVideo({ start: startTime * 1000, end: endTime * 1000 });
-    saveImages(props.videoRef);
+    await saveImages(props.videoRef);
     await DetectPose();
     setStartTime(0);
     setEndTime(0);
     pauseVideo();
+    setOpen(true);
   };
   const handleOpenDialog = async () => {
     if (props.videoRef.current === null) {
@@ -441,21 +456,16 @@ const ProjectView = (props: Props) => {
           <TitleButton type='button' onClick={handleOpenDialog}>
             <SaveIcon />
           </TitleButton>
-          <Dialog open={open} onClose={() => setOpen(false)}>
-            <p>Save Source</p>
-            <FlexWrapper>
-              <ImageSquare src={images.start} size={140} />
-              <ImageSquare src={images.middle} size={140} />
-              <ImageSquare src={images.end} size={140} />
-            </FlexWrapper>
-            <input type='text' placeholder='Name' value='MySource' />
-            <input type='text' placeholder='Length' value={duration} />
-            <input type='text' placeholder='Start' value={startPose} />
-            <input type='text' placeholder='End' value={endPose} />
-            <FlexWrapper>
-              <button onClick={() => UploadSource()}>Close</button>
-              <button onClick={() => setOpen(false)}>Upload</button>
-            </FlexWrapper>
+          <Dialog title='Source' open={open} onClose={() => setOpen(false)}>
+            {/* const SourceDialog = (images, UploadSource, setOpen) */}
+            <SourceDialog
+              images={images}
+              UploadSource={UploadSource}
+              setOpen={setOpen}
+              duration={duration}
+              startPose={startPose}
+              endPose={endPose}
+            />
           </Dialog>
         </Title>
         {props.videoRef.current?.src === '' && (
@@ -463,8 +473,6 @@ const ProjectView = (props: Props) => {
         )}
         <StyledVideo
           ref={props.videoRef}
-          // autoPlay
-          // controls
           onLoadedData={(event) => event.currentTarget.play()}
           onTimeUpdate={handleTimeUpdate} // 비디오 재생 시간이 변경될 때마다 호출
           onLoadedMetadata={handleDurationChange} // 비디오 메타데이터가 로드되면 호출
@@ -531,6 +539,126 @@ const ProjectView = (props: Props) => {
           <p>{formatMilliSecondsToTimeString(duration * 1000, 'minute')}</p>
         </Time>
       </ProjectViewWrapper>
+    </>
+  );
+};
+
+interface IPropsSourceDailog {
+  images: {
+    start: string;
+    middle: string;
+    end: string;
+  };
+  UploadSource: () => void;
+  setOpen: React.Dispatch<SetStateAction<boolean>>;
+  duration: number;
+  startPose: string;
+  endPose: string;
+}
+const InputWrapper = styled.div`
+  padding: 0.4rem;
+  display: flex;
+  font-size: 1.2rem;
+  width: 100%;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin-bottom: 1.4rem;
+  align-items: center;
+`;
+const Input = styled.input`
+  width: 200px;
+  border-radius: 1.2rem;
+  padding: 0.4rem;
+  height: 1.6rem;
+  font-size: 1.2rem;
+  display: flex;
+`;
+const Label = styled.label`
+  font-size: 1.3rem;
+  min-width: 200px;
+`;
+const Section = styled.div`
+  width: 50%;
+  height: 100%;
+  padding: 1.2rem;
+  @media (max-width: 1080px) {
+    width: 500px;
+  }
+`;
+const ImageWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  width: 100%;
+  @media (max-width: 1080px) {
+    flex-direction: column;
+  }
+`;
+const SourceDialog = ({
+  images,
+  UploadSource,
+  setOpen,
+  duration,
+  startPose,
+  endPose,
+}: IPropsSourceDailog) => {
+  const [sourceName, setSourceName] = useState('');
+  const [sourceLength, setSourceLength] = useState(duration);
+  const [start, setStart] = useState(startPose);
+  const [end, setEnd] = useState(endPose);
+  return (
+    <>
+      <Wrapper>
+        <Section>
+          <ImageWrapper>
+            <ImageSquare src={images.start} size={140} />
+            <ImageSquare src={images.middle} size={140} />
+            <ImageSquare src={images.end} size={140} />
+          </ImageWrapper>
+        </Section>
+        <Section>
+          <InputWrapper>
+            <Label>NAME</Label>
+            <Input type='text' placeholder='Source Name' />
+          </InputWrapper>
+          <InputWrapper>
+            <Label>LENGHT</Label>
+            <Input
+              type='text'
+              placeholder='Length'
+              value={sourceLength}
+              onChange={(e) => setSourceLength(e.currentTarget.value)}
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label>START POSE</Label>
+            <Input
+              type='text'
+              placeholder='Start'
+              value={start}
+              onChange={(e) => setStart(e.currentTarget.value)}
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label>END POSE</Label>
+            <Input
+              type='text'
+              placeholder='End'
+              value={end}
+              onChange={(e) => setEnd(e.currentTarget.value)}
+            />
+            <Label>Tag</Label>
+            <TagsInput />
+          </InputWrapper>
+        </Section>
+      </Wrapper>
+      <FlexWrapper>
+        <button onClick={() => UploadSource()}>Upload</button>
+        <button onClick={() => setOpen(false)}>Close</button>
+      </FlexWrapper>
     </>
   );
 };

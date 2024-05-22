@@ -14,23 +14,34 @@ const DialogOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `;
 
 // eslint-disable-next-line react-refresh/only-export-components
 const DialogBox = styled.div`
   background-color: black;
-  padding: 20px;
+  min-height: 520px;
   border-radius: 10px;
-  width: 500px;
-  max-width: 100%;
+  width: 1000px;
+  padding: 26px;
+
+  @media (max-width: 1080px) {
+    width: 600px;
+  }
+`;
+const Title = styled.div`
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1.8rem;
 `;
 interface DialogProps {
+  title: string;
   open: boolean;
   onClose: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   children: ReactNode;
 }
 
-export const Dialog = ({ open, children }: DialogProps) => {
+export const Dialog = ({ open, title, children }: DialogProps) => {
   if (!open) return null;
 
   return ReactDOM.createPortal(
@@ -40,6 +51,7 @@ export const Dialog = ({ open, children }: DialogProps) => {
           e.stopPropagation()
         }
       >
+        <Title>Source</Title>
         {children}
       </DialogBox>
     </DialogOverlay>,

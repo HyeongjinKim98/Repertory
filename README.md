@@ -1,5 +1,5 @@
 # Repertory
-![readmehead](/uploads/a31db15f118b12f020aac31836e48bb4/readmehead.png)
+![logo](https://github.com/Team-Repertory/Repertory/assets/79950123/d676543b-ffdb-479d-9f2b-e7f76f777f41)
 ## 🔍 About
 ### 브레이킹 댄서들의 온라인 레파토리수첩, Repertory입니다! <br>
 우리는 프리스타일도 좋아하지만, 레파토리(이하 레파)를 필연적으로 짜야하는 운명이죠. <br>
@@ -41,15 +41,15 @@
 ### 1. 영상편집
 #### a.  소스 생성
 
-![Trim_1](/uploads/cb8767b3094f26426e134060c8a3272f/Trim_1.PNG)<br>
+![1_a](https://github.com/Team-Repertory/Repertory/assets/79950123/76fa6924-1550-459c-b707-7116832b134d)<br>
 
 오른쪽 위 생성하기 버튼을 이용해서 프로젝트를 만들 수 있다. 여기서 소스 만들기 탭에 들어가, 원하는 영상을 업로드하고, 재생 바를 이용해서 **구간을 설정**한다. 원하는 곳에 재생바를 놓고 **Start**와 **End**를 눌러 구간을 설정하고, **Trim**을 누르면 원하는 구간이 잘려서 소스가 만들어진다.
 #### b. 소스 설정
-![Trim_2](/uploads/a8e3ee3050e10b8efd94f485ab1d615b/Trim_2.PNG)<br>
+![1_b](https://github.com/Team-Repertory/Repertory/assets/79950123/6de26f70-2139-4464-b7ed-b2960b74bd8c)<br>
 
 소스를 생성하게 되면, 소스 이름과, 태그, 시작자세와 끝자세를 지정할 수 있다. 이 자세들의 이름은 영상의 첫 프레임과 끝 프레임을 기준으로 **AI가 자동으로 인식하여 추천**해준다. 잘못나왔을 경우에는 수정할 수 있다. 생성한 소스는 왼쪽의 소스 목록에 들어가게 된다.
 #### c. 레파토리 제작
-![repertory](/uploads/301ae4a5c1135a492300cddc18893d2b/repertory.PNG)<br>
+![1_c](https://github.com/Team-Repertory/Repertory/assets/79950123/e2aed863-308b-48a0-9141-f6a650a6dd75)<br>
 
 미리 제작해놓은 소스들을 작업대에 끌어다 놓으면, 소스가 추가된다. 이 소스들은 **순서를 바꾸거나 다시 삭제**할 수 있다. 배치해놓은 상태에서 재생을 누르면 그대로 재생이 된다.
 #### d. 레파토리 저장
@@ -65,7 +65,7 @@
 
 ### 2. 커뮤니티
 #### a. 피드
-![Feed](/uploads/fc102998abdb47ce0f80a9f140cbb2eb/Feed.PNG) <br>
+![2_a](https://github.com/Team-Repertory/Repertory/assets/79950123/1a2bcf0f-dfc1-42ac-8d60-22b4a5a59785) <br>
 
 다른사람의 소스나 레파토리를 무작위로 볼 수 있다. 특정 사용자를 **구독**하게 되면, 그 사용자의 영상들이 우선적으로 뜨게 된다. 목록을 누르면 그 영상을 볼 수 있고, 내 보관함에 **저장**하거나, **좋아요**를 누를 수 있다.
 #### b. 소스 클론
@@ -74,7 +74,7 @@
 다른 사용자의 소스를 저장하면, **내 소스 보관함으로** 들어오게 된다. 소스 정보를 그대로 가져오고, **추후** 내가 레파토리를 만들때 **사용**할 수 있다.
 
 ### 3. 기타 기능
-![loginregister](/uploads/54d80ff8fc52029baa7ac6aa00f98149/loginregister.PNG) <br>
+![2_b](https://github.com/Team-Repertory/Repertory/assets/79950123/2b5886f8-6094-4afc-bef7-4206373e2fe0) <br>
 #### a. 로그인
 
 **자체 로그인**과 **구글** 소셜로그인을 지원한다. 둘 모두를 필수로 입력해야한다.
@@ -98,15 +98,15 @@
 입출력이 잦은 정보들을 관리하기 위해서 도입했다. 주로 인증토큰을 처리하기도 하고, 공개, 비공개 여부 때문에 복잡했던 로직을 최대한 빨리 처리하려면 레디스에 캐싱하는 작업이 필요했다. 
 
 ## Architecture
-![architecture](/uploads/ea92afd9ece33f5f3deb360f13037636/architecture.png)
+![architecture](https://github.com/Team-Repertory/Repertory/assets/79950123/493243b7-04f9-428f-acd3-8d144b18f653)
 
 ## ER Diagram
 - Community, Member 
-<img src = "/uploads/837fa1d43314c90872bbcafe5ec9a091/Community.png" width="49%" height="50%">
+<img src = "https://github.com/Team-Repertory/Repertory/assets/79950123/59124c30-25c8-4432-bcb4-0cf361514b6" width="49%" height="50%">
 <img src = "/uploads/133f6c2618a7ff72002b4f1cd79febdf/Member.png" width="50%" height="50%">
 
 - Dance
-<img src = "/uploads/71a0d388960cdca7c4744085eb9ba4a8/Dance.png">
+<img src = "https://github.com/Team-Repertory/Repertory/assets/79950123/bee5df99-4472-44c7-997a-63ece492a6b8">
 
 
 ## 🛠 Tech Stack 

@@ -145,7 +145,7 @@ const RepertoryPage = () => {
     const formData = new FormData();
     formData.append('projectTitle', 'TestName');
     if (img) formData.append('projectThumbnail', img);
-    project.postProject(7, formData);
+    project.postProject(4, formData);
   };
   return (
     <>

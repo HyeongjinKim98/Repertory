@@ -16,6 +16,7 @@ export const LoginStore = create<LoginState>((set) => ({
 
   login: async ({ memberLoginId, memberPassword }: ILoginData) => {
     const response = await loginMember({ memberLoginId, memberPassword });
+    localStorage.setItem('token','eyJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6MSwibWVtYmVyTG9naW5JZCI6InNzYWZ5IiwibWVtYmVyUm9sZSI6IlJPTEVfUkVHSVNURVJFRF9NRU1CRVIiLCJpYXQiOjE3MTYzNTMzMzYsImV4cCI6MTcxNzU2MjkzNn0.1Txtc4m2KKTWSEz6TVFmkt63QP5xQU4a0MF8569WlaM')
     if (response.status === 200) {
       console.log(`[Login Store] : Login 200`);
       const token = response.headers['authorization'];

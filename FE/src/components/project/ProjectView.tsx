@@ -19,8 +19,6 @@ import * as dance from '@/services/dance';
 import * as project from '@/services/project';
 // import { Title } from './Title';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import { Upload } from '@mui/icons-material';
-import { SetState } from 'zustand';
 import TagsInput from '../common/TagInput';
 interface ITrimSection {
   start: number;

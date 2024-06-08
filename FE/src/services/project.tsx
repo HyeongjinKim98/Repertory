@@ -10,7 +10,7 @@ const getProjectsList = async () => {
 // 프로젝트 이름 수정
 const patchProject = async (projectId: number) => {
   const response = await $auth().patch(`/project/${projectId}`);
-  console.log(response);
+  console.log(response); 
 };
 
 // 프로젝트 생성

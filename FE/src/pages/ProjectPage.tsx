@@ -7,7 +7,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import { formatMilliSecondsToTimeString } from '@/util';
-// import { Title } from '@/components/project/Title';
 import { ISource } from '@/services/interface';
 
 interface ITrimSection {
@@ -84,7 +83,6 @@ const ProjectPage: React.FC = () => {
         messageRef.current.innerHTML = message;
       }
     });
-
     await ffmpeg.load({
       coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
       wasmURL: await toBlobURL(
